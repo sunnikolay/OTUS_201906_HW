@@ -1,3 +1,3 @@
 Студент:</br>
-Nikolay Styazhkin (Стяжкин Николай)</br>
-sun.nikolay@ya.ru</br>
+<b>Nikolay Styazhkin (Стяжкин Николай)<b></br>
+email: sun.nikolay@ya.ru</br>
