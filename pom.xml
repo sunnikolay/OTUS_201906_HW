@@ -16,6 +16,7 @@
 
     <modules>
         <module>hw01-maven</module>
+        <module>hw03-DIYarrayList</module>
     </modules>
 
     <properties>

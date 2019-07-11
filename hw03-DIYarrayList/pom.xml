@@ -9,19 +9,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>hw01-maven</artifactId>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-    </dependencies>
+    <artifactId>hw03-DIYarrayList</artifactId>
 
     <packaging>jar</packaging>
 
     <build>
-        <finalName>${project.name}</finalName>
+        <finalName>DIY-arrayList</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -32,7 +25,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>net.sunnikolay.HelloOtus</mainClass>
+                            <mainClass>DIYArrayList</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
