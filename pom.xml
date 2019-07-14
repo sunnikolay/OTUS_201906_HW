@@ -8,5 +8,45 @@
     <artifactId>OTUS_HW</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <description>Git test</description>
+    <developers>
+        <developer>
+            <name>Styazhkin Nikolay</name>
+        </developer>
+    </developers>
+
+    <modules>
+        <module>hw01-maven</module>
+        <module>hw03-DIYarrayList</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <com.google.guava.version>28.0-jre</com.google.guava.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${com.google.guava.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <packaging>pom</packaging>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>3.1.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>
