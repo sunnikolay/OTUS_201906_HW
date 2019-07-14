@@ -1,8 +1,8 @@
 import java.util.*;
 
-public class DIYArrayList<T> extends AbstractList<T> implements List<T> {
+public class DIYArrayList<T> implements List<T> {
 
-    private final int INIT_SIZE = 15;
+    private final int INIT_SIZE = 100;
     private Object[] objects = new Object[ INIT_SIZE ];
     private int pointer = 0;
 
@@ -55,62 +55,37 @@ public class DIYArrayList<T> extends AbstractList<T> implements List<T> {
 
     @Override
     public boolean remove( Object o ) {
-        return false;
+        throw new UnsupportedOperationException( "oooPs..." );
     }
 
     @Override
     public boolean containsAll( Collection<?> collection ) {
-        return false;
-    }
-
-    public boolean addAll( Collection<? super T> collection, T... elements ) {
-        boolean   result = false;
-        System.out.println( collection.size() );
-        System.out.println( elements.length );
-        Object[] objects = elements;
-        int       length = elements.length;
-
-        for ( int i = 0; i < length; ++i ) {
-            T element = (T) objects[i];
-            result |= collection.add( element );
-        }
-
-        return result;
+        throw new UnsupportedOperationException( "oooPs..." );
     }
 
     @Override
     public boolean addAll( Collection<? extends T> collection ) {
-        return false;
+        throw new UnsupportedOperationException( "oooPs..." );
     }
 
     @Override
     public boolean addAll( int i, Collection<? extends T> collection ) {
-        return false;
+        throw new UnsupportedOperationException( "oooPs..." );
     }
 
     @Override
     public boolean removeAll( Collection<?> collection ) {
-        return false;
+        throw new UnsupportedOperationException( "oooPs..." );
     }
 
     @Override
     public boolean retainAll( Collection<?> collection ) {
-        return false;
+        throw new UnsupportedOperationException( "oooPs..." );
     }
 
     @Override
     public void clear() {
-
-    }
-
-    @Override
-    public boolean equals( Object o ) {
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return 0;
+        throw new UnsupportedOperationException( "oooPs..." );
     }
 
     @Override
@@ -119,43 +94,100 @@ public class DIYArrayList<T> extends AbstractList<T> implements List<T> {
     }
 
     @Override
-    public T set( int i, T t ) {
-        return null;
+    public T set( int index, T type ) {
+        T old = (T) objects[ index ];
+        Object newObject = type;
+        this.objects[ index ] = newObject;
+
+        return old;
     }
 
     @Override
     public void add( int i, T t ) {
-        super.add( i, t );
+        throw new UnsupportedOperationException( "oooPs..." );
     }
 
     @Override
     public T remove( int i ) {
-        return null;
+        throw new UnsupportedOperationException( "oooPs..." );
     }
 
     @Override
     public int indexOf( Object o ) {
-        return 0;
+        throw new UnsupportedOperationException( "oooPs..." );
     }
 
     @Override
     public int lastIndexOf( Object o ) {
-        return super.lastIndexOf( o );
+        throw new UnsupportedOperationException( "oooPs..." );
     }
 
     @Override
     public ListIterator<T> listIterator() {
-        return null;
+        return new ListIterator<>() {
+            @Override
+            public boolean hasNext() {
+                return pointer < objects.length;
+            }
+
+            @Override
+            public T next() {
+                return (T) objects[ pointer++ ];
+            }
+
+            @Override
+            public boolean hasPrevious() {
+                return false;
+            }
+
+            @Override
+            public T previous() {
+                return null;
+            }
+
+            @Override
+            public int nextIndex() {
+                return 0;
+            }
+
+            @Override
+            public int previousIndex() {
+                return 0;
+            }
+
+            @Override
+            public void remove() {
+
+            }
+
+            @Override
+            public void set( T t ) {
+
+            }
+
+            @Override
+            public void add( T t ) {
+
+            }
+        };
     }
 
     @Override
     public ListIterator<T> listIterator( int i ) {
-        return null;
+        throw new UnsupportedOperationException( "listIterator" );
     }
 
     @Override
     public List<T> subList( int i, int i1 ) {
-        return null;
+        throw new UnsupportedOperationException( "oooPs..." );
     }
 
+    @Override
+    public String toString() {
+        String str = "";
+        for ( int i = 0; i < pointer; i++ ) {
+            str += this.objects[i] + ", ";
+        }
+        return str;
+    }
 }

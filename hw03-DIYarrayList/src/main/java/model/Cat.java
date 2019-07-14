@@ -4,7 +4,7 @@ public class Cat extends Animal {
 
     @Override
     public String toString() {
-        return "Class CAT";
+        return "CAT";
     }
 
 }

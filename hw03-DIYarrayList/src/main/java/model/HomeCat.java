@@ -10,7 +10,7 @@ public class HomeCat extends Cat {
 
     @Override
     public String toString() {
-        return "HomeCat: " + this.name;
+        return this.name;
     }
 
 }

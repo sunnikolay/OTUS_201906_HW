@@ -1,25 +1,36 @@
 import model.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class Main {
 
     public static void main( String[] args ) {
+        DIYArrayList<Animal> animals = new DIYArrayList<>();
+        animals.add( new Animal() );
+        animals.add( new Animal() );
+        animals.add( new Animal() );
+
         DIYArrayList<Cat> cats = new DIYArrayList<>();
-        cats.add( new Cat() );
-        cats.add( new Cat() );
-        cats.add( new Cat() );
-//        System.out.println( "CATS index 1: " + cats.get( 1 ) );
-        System.out.println( "CATS size: " + cats.size() );
-//        System.out.println( "CATS isEmpty: " + cats.isEmpty() );
+        for ( int i = 0; i < 20; i++ ) {
+            cats.add( new Cat() );
+        }
 
         DIYArrayList<HomeCat> homeCats = new DIYArrayList<>();
-        homeCats.add( new HomeCat( "cat #1" ) );
-        homeCats.add( new HomeCat( "cat #2" ) );
-//        System.out.println( "HomeCATS index 1: " + homeCats.get( 1 ) );
-        System.out.println( "HomeCATS size: " + homeCats.size() );
-//        System.out.println( "HomeCATS isEmpty: " + homeCats.isEmpty() );
+        for ( int j = 0; j < 9; j++ ) {
+            homeCats.add( new HomeCat( "cat #" + ( j + 1 ) ) );
+        }
 
-        homeCats.addAll( cats );
-        System.out.println( "After addAll homeCats to cats size: " + homeCats.size() );
+//        boolean b = Collections.addAll( cats, new HomeCat( "cat #4" ) );
+//        System.out.println( "-------------------------------------" );
+//        System.out.println( "Size cats after addAll: " + cats.size() );
+//        System.out.println( cats.toString() );
+//        System.out.println( "-------------------------------------" );
+
+        System.out.println( "PRINT cats(before): " + cats.toString() );
+        Collections.copy( cats, homeCats );
+//        System.out.println( "Size cats after copy: " + cats.size() );
+        System.out.println( "PRINT cats(after): " + cats.toString() );
     }
 
 }
