@@ -124,52 +124,52 @@ public class DIYArrayList<T> implements List<T> {
 
     @Override
     public ListIterator<T> listIterator() {
-        return new ListIterator<>() {
-            @Override
-            public boolean hasNext() {
-                return pointer < objects.length;
-            }
-
-            @Override
-            public T next() {
-                return (T) objects[ pointer++ ];
-            }
-
-            @Override
-            public boolean hasPrevious() {
-                return false;
-            }
-
-            @Override
-            public T previous() {
-                return null;
-            }
-
-            @Override
-            public int nextIndex() {
-                return 0;
-            }
-
-            @Override
-            public int previousIndex() {
-                return 0;
-            }
-
-            @Override
-            public void remove() {
-
-            }
-
-            @Override
-            public void set( T t ) {
-
-            }
-
-            @Override
-            public void add( T t ) {
-
-            }
-        };
+//        return new ListIterator<>() {
+//            @Override
+//            public boolean hasNext() {
+//                return pointer < objects.length;
+//            }
+//
+//            @Override
+//            public T next() {
+//                return (T) objects[ pointer++ ];
+//            }
+//
+//            @Override
+//            public boolean hasPrevious() {
+//                return false;
+//            }
+//
+//            @Override
+//            public T previous() {
+//                return null;
+//            }
+//
+//            @Override
+//            public int nextIndex() {
+//                return 0;
+//            }
+//
+//            @Override
+//            public int previousIndex() {
+//                return 0;
+//            }
+//
+//            @Override
+//            public void remove() {
+//
+//            }
+//
+//            @Override
+//            public void set( T t ) {
+//
+//            }
+//
+//            @Override
+//            public void add( T t ) {
+//
+//            }
+//        };
     }
 
     @Override
