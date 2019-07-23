@@ -153,8 +153,6 @@ public class Ananalize {
         System.out.println( "Всего зарегистрированно тестов: " + this.count );
         System.out.println( "Успешно: " + this.testOk );
         System.out.println( "Не успешно: " + this.testErr );
-
-
     }
 
 }
