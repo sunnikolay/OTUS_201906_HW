@@ -1,126 +1,99 @@
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.ArrayList;
+import java.util.List;
 
-public class Ananalize {
+class TestRunner {
 
     private Class<?> aClass;
 
-    private ArrayList<String> methodNames = new ArrayList<>();
-
-    private ArrayList<Method> methodTests;
-
-    private Object instance;
-
-    private Method[] methods;
-
-    private int testOk = 0;
-
-    private int testErr = 0;
-
-    private int count = 0;
+    private Method[]     allMethods;
+    private List<Method> methodsBefore;
+    private List<Method> methodsTest;
+    private List<Method> methodsAfter;
+    private List<Method> finishedMethods = new ArrayList<>();
 
     /**
      * Конструктор
      */
-    Ananalize( Class<?> clazz ) {
-
-        this.aClass = clazz;
-
-        // Инициализация первого запуска
-        initialize( this.aClass );
-
-        this.count = this.methodNames.size();
-
-        // Старт
+    TestRunner( Class<?> clazz ) {
+        aClass = clazz;
+        initialize( aClass );
         startTest();
-
     }
 
     /**
      * Инициализация
      */
     private void initialize( Class<?> clazz ) {
-        try {
-            this.instance = clazz.getDeclaredConstructors()[ 0 ].newInstance();
-        }
-        catch ( InstantiationException | IllegalAccessException | InvocationTargetException e ) {
-            e.printStackTrace();
-        }
+        allMethods = clazz.getDeclaredMethods();
 
-        methods = clazz.getDeclaredMethods();
-
-        methodTests = findMethod( "@annotation.Test()" );
-        for ( Method methodTest : methodTests ) {
-            methodNames.add( methodTest.getName() );
-        }
+        methodsBefore = findMethod( "@annotation.Before()" );
+        methodsTest   = findMethod( "@annotation.Test()" );
+        methodsAfter  = findMethod( "@annotation.After()" );
     }
 
     /**
      * Запуск тестирования
      */
     private void startTest() {
-        for ( Method method : this.methodTests ) {
-            if ( this.methodNames.contains( method.getName() ) ) {
-                startMethod( "@annotation.Before()" );
-                startMethod( method );
-                System.out.println( "instance: " + this.instance );
-                startMethod( "@annotation.After()" );
+        Object instance = null;
+        int     success = 0;
+        int     error   = 0;
 
-                clean( method );
+        for ( Method method : methodsTest ) {
+            try {
+                instance = aClass.getDeclaredConstructors()[ 0 ].newInstance();
+            }
+            catch ( InstantiationException | IllegalAccessException | InvocationTargetException e ) {
+                e.printStackTrace();
+            }
+
+            if ( ! finishedMethods.contains( method ) ) {
+                // @Before
+                startMethods( methodsBefore, instance );
+
+                // @Test
+                if ( startMethod( method, instance ) ) { success++; }
+                else { error++; }
+
+                // @After
+                startMethods( methodsAfter, instance );
+
+                // Добавить текущий метод в список выполненых
+                finishedMethods.add( method );
             }
         }
 
-        printResult();
-    }
-
-    /**
-     * Очистка
-     *
-     * @param method
-     */
-    private void clean( Method method ) {
-        methodNames.remove( method.getName() );
-
-        this.methodTests = null;
-        this.instance    = null;
-        this.methods     = null;
-
-        initialize( this.aClass );
+        printResult( success, error );
     }
 
     /**
      * invoke метода
-     *
-     * @param anno Имя аннотации
      */
-    private void startMethod( String anno ) {
-        ArrayList<Method> methods = findMethod( anno );
+    private boolean startMethod( Method method, Object instance ) {
+        try {
+            method.invoke( instance );
+            return true;
+        }
+        catch ( IllegalAccessException | InvocationTargetException e ) {
+            return false;
+        }
+    }
 
-        if ( methods.size() > 0 ) {
+    /**
+     * invoke методов, результат выполнения не затрагивает счетчики
+     */
+    private void startMethods( List<Method> methods, Object instance ) {
+        for ( Method method : methods ) {
             try {
-                for ( Method method : methods ) {
-                    method.invoke( this.instance );
-                }
+                method.invoke( instance );
             }
             catch ( IllegalAccessException | InvocationTargetException e ) {
                 e.printStackTrace();
             }
         }
-    }
 
-    /**
-     * invoke метода
-     */
-    private void startMethod( Method method ) {
-        try {
-            method.invoke( this.instance );
-            this.testOk++;
-        }
-        catch ( IllegalAccessException | InvocationTargetException e ) {
-            this.testErr++;
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -130,10 +103,10 @@ public class Ananalize {
      *
      * @return Methods
      */
-    private ArrayList<Method> findMethod( String findAnn ) {
-        ArrayList<Method> ms = new ArrayList<>();
+    private List<Method> findMethod( String findAnn ) {
+        List<Method> ms = new ArrayList<>();
 
-        for ( Method method : this.methods ) {
+        for ( Method method : allMethods ) {
             Annotation[] annotations = method.getDeclaredAnnotations();
             for ( Annotation annotation : annotations ) {
                 if ( annotation.toString().equals( findAnn ) ) {
@@ -148,11 +121,11 @@ public class Ananalize {
     /**
      * Печать результатов тестирования
      */
-    private void printResult() {
+    private void printResult( int success, int error ) {
         System.out.println( "---------------------------------------------" );
-        System.out.println( "Всего зарегистрированно тестов: " + this.count );
-        System.out.println( "Успешно: " + this.testOk );
-        System.out.println( "Не успешно: " + this.testErr );
+        System.out.println( "Всего зарегистрированно тестов: " + finishedMethods.size() );
+        System.out.println( "Успешно: " + success );
+        System.out.println( "Не успешно: " + error );
     }
 
 }
