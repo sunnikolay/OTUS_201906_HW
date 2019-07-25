@@ -1,3 +1,7 @@
+import annotation.After;
+import annotation.Before;
+import annotation.Test;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.ArrayList;
@@ -11,7 +15,6 @@ class TestRunner {
     private List<Method> methodsBefore;
     private List<Method> methodsTest;
     private List<Method> methodsAfter;
-    private List<Method> finishedMethods = new ArrayList<>();
 
     /**
      * Конструктор
@@ -28,9 +31,9 @@ class TestRunner {
     private void initialize( Class<?> clazz ) {
         allMethods = clazz.getDeclaredMethods();
 
-        methodsBefore = findMethod( "@annotation.Before()" );
-        methodsTest   = findMethod( "@annotation.Test()" );
-        methodsAfter  = findMethod( "@annotation.After()" );
+        methodsBefore = findMethod( Before.class );
+        methodsTest   = findMethod( Test.class );
+        methodsAfter  = findMethod( After.class );
     }
 
     /**
@@ -49,20 +52,15 @@ class TestRunner {
                 e.printStackTrace();
             }
 
-            if ( ! finishedMethods.contains( method ) ) {
-                // @Before
-                startMethods( methodsBefore, instance );
-
+            // @Before
+            if ( startMethods( methodsBefore, instance ) ) {
                 // @Test
                 if ( startMethod( method, instance ) ) { success++; }
                 else { error++; }
-
-                // @After
-                startMethods( methodsAfter, instance );
-
-                // Добавить текущий метод в список выполненых
-                finishedMethods.add( method );
             }
+
+            // @After
+            startMethods( methodsAfter, instance );
         }
 
         printResult( success, error );
@@ -84,32 +82,36 @@ class TestRunner {
     /**
      * invoke методов, результат выполнения не затрагивает счетчики
      */
-    private void startMethods( List<Method> methods, Object instance ) {
+    private boolean startMethods( List<Method> methods, Object instance ) {
+        boolean result = true;
+
         for ( Method method : methods ) {
             try {
                 method.invoke( instance );
             }
             catch ( IllegalAccessException | InvocationTargetException e ) {
                 e.printStackTrace();
+                result = false;
             }
         }
 
+        return result;
     }
 
     /**
      * Поиск метода по аннотации
      *
-     * @param findAnn Аннотация
+     * @param findClass Аннотация
      *
      * @return Methods
      */
-    private List<Method> findMethod( String findAnn ) {
+    private List<Method> findMethod( Class<?> findClass ) {
         List<Method> ms = new ArrayList<>();
 
         for ( Method method : allMethods ) {
             Annotation[] annotations = method.getDeclaredAnnotations();
             for ( Annotation annotation : annotations ) {
-                if ( annotation.toString().equals( findAnn ) ) {
+                if ( annotation.annotationType().equals( findClass ) ) {
                     ms.add( method );
                 }
             }
@@ -123,7 +125,7 @@ class TestRunner {
      */
     private void printResult( int success, int error ) {
         System.out.println( "---------------------------------------------" );
-        System.out.println( "Всего зарегистрированно тестов: " + finishedMethods.size() );
+        System.out.println( "Всего зарегистрированно тестов: " + methodsTest.size() );
         System.out.println( "Успешно: " + success );
         System.out.println( "Не успешно: " + error );
     }

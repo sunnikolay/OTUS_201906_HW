@@ -6,9 +6,15 @@ import annotation.Test;
 
 public class CalculatorTest {
 
+    //@Before
+    public void startTwo() throws Exception {
+        throw new Exception( "new Exception..." );
+
+    }
+
     @Before
-    public void start() {
-        System.out.println( "start test..." );
+    public void start() throws Exception {
+        System.out.println("start test...");
     }
 
     @Test()
