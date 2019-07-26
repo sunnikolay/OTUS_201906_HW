@@ -1,17 +1,17 @@
-import annotation.After;
-import annotation.Before;
-import annotation.Test;
+package ru.otus.homework;
 
-import java.lang.annotation.Annotation;
+import ru.otus.homework.annotation.After;
+import ru.otus.homework.annotation.Before;
+import ru.otus.homework.annotation.Test;
+import ru.otus.homework.utility.UtilityTests;
+
 import java.lang.reflect.*;
-import java.util.ArrayList;
 import java.util.List;
 
 class TestRunner {
 
     private Class<?> aClass;
 
-    private Method[]     allMethods;
     private List<Method> methodsBefore;
     private List<Method> methodsTest;
     private List<Method> methodsAfter;
@@ -29,28 +29,38 @@ class TestRunner {
      * Инициализация
      */
     private void initialize( Class<?> clazz ) {
-        allMethods = clazz.getDeclaredMethods();
+        methodsBefore = UtilityTests.findMethod( Before.class, clazz.getDeclaredMethods() );
+        methodsTest   = UtilityTests.findMethod( Test.class, clazz.getDeclaredMethods() );
+        methodsAfter  = UtilityTests.findMethod( After.class, clazz.getDeclaredMethods() );
+    }
 
-        methodsBefore = findMethod( Before.class );
-        methodsTest   = findMethod( Test.class );
-        methodsAfter  = findMethod( After.class );
+    /**
+     * instance
+     *
+     * @return Object
+     */
+    private Object createInstance() {
+        Object instance = null;
+
+        try {
+            instance = aClass.getDeclaredConstructors()[ 0 ].newInstance();
+        }
+        catch ( InstantiationException | IllegalAccessException | InvocationTargetException e ) {
+            e.printStackTrace();
+        }
+
+        return instance;
     }
 
     /**
      * Запуск тестирования
      */
     private void startTest() {
-        Object instance = null;
         int     success = 0;
         int     error   = 0;
 
         for ( Method method : methodsTest ) {
-            try {
-                instance = aClass.getDeclaredConstructors()[ 0 ].newInstance();
-            }
-            catch ( InstantiationException | IllegalAccessException | InvocationTargetException e ) {
-                e.printStackTrace();
-            }
+            Object instance = createInstance();
 
             // @Before
             if ( startMethods( methodsBefore, instance ) ) {
@@ -96,28 +106,6 @@ class TestRunner {
         }
 
         return result;
-    }
-
-    /**
-     * Поиск метода по аннотации
-     *
-     * @param findClass Аннотация
-     *
-     * @return Methods
-     */
-    private List<Method> findMethod( Class<?> findClass ) {
-        List<Method> ms = new ArrayList<>();
-
-        for ( Method method : allMethods ) {
-            Annotation[] annotations = method.getDeclaredAnnotations();
-            for ( Annotation annotation : annotations ) {
-                if ( annotation.annotationType().equals( findClass ) ) {
-                    ms.add( method );
-                }
-            }
-        }
-
-        return ms;
     }
 
     /**
