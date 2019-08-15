@@ -6,8 +6,8 @@ import java.lang.reflect.Proxy;
 
 public class IoC {
 
-    static TestLoggingInterface createClass( TestLoggingImpl testLogging ) {
-        InvocationHandler invocationHandler = new TestLoggingInvocationHandler( testLogging );
+    static TestLoggingInterface createClass() {
+        InvocationHandler invocationHandler = new TestLoggingInvocationHandler( new TestLoggingImpl() );
 
         return (TestLoggingInterface) Proxy.newProxyInstance(
                 IoC.class.getClassLoader(),
@@ -18,22 +18,22 @@ public class IoC {
 
     static class TestLoggingInvocationHandler implements InvocationHandler {
 
-        private final TestLoggingInterface testLoggingInterface;
+        private final Object objIntf;
 
         public TestLoggingInvocationHandler( TestLoggingImpl testLogging ) {
-            this.testLoggingInterface = testLogging;
+            this.objIntf = testLogging;
         }
 
         @Override
         public Object invoke( Object o, Method method, Object[] objects ) throws Throwable {
             System.out.println( "executed method: " + method + ", param: " + objects[0] );
 
-            return method.invoke( testLoggingInterface, objects );
+            return method.invoke( objIntf, objects );
         }
 
         @Override
         public String toString() {
-            return "TestLoggingInvocationHandler{class=" + testLoggingInterface + "}";
+            return "TestLoggingInvocationHandler{class=" + objIntf + "}";
         }
 
     }
