@@ -24,4 +24,17 @@ public final class Utility {
         return ms;
     }
 
+    public static boolean checkAnnotation( Class<?> findClass, Method method ) {
+        boolean check = false;
+
+        Annotation[] annotations = method.getDeclaredAnnotations();
+        for ( Annotation annotation : annotations ) {
+            if ( annotation.annotationType().equals( findClass ) ) {
+                check = true;
+            }
+        }
+
+        return check;
+    }
+
 }
