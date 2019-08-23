@@ -22,7 +22,7 @@ public class Creator {
             }
 
             if ( i % 1000 == 0 ) {
-                Thread.sleep( 1 );
+                Thread.sleep( 5 );
             }
 
         }
