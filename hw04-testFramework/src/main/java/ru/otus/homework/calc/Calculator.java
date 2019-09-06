@@ -1,4 +1,4 @@
-package calc;
+package ru.otus.homework.calc;
 
 public class Calculator {
 

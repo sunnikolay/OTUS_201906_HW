@@ -1,13 +1,10 @@
-import java.lang.reflect.InvocationTargetException;
+package ru.otus.homework;
 
 public class Demo {
 
-    private static Class<?> clazz;
-
-    public static void main( String[] args ) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public static void main( String[] args ) {
         try {
-            clazz = Class.forName( args[0] );
-            Ananalize ananalize = new Ananalize( clazz );
+            new TestRunner( Class.forName( args[0] ) );
         }
         catch ( ClassNotFoundException e ) {
             System.out.println( "Класс \"" + args[0] + "\" не найден!!!" );

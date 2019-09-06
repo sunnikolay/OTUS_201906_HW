@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>hw04-testFramework</artifactId>
+    <artifactId>hw06-gc</artifactId>
+
 
 </project>
