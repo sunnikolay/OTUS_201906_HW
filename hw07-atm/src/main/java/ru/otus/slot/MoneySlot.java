@@ -10,6 +10,11 @@ public class MoneySlot {
     private int denomination;
 
     /**
+     * Количество купюр в ячейке
+     */
+    private int countDenomination = 0;
+
+    /**
      * Следующий слот(ячейка) с деньгами
      */
     private MoneySlot moneySlotNext;
@@ -30,7 +35,7 @@ public class MoneySlot {
      */
     public void givingCash( Money money ) {
         int countBanknote = money.getRequestMoney() / this.denomination;
-        int remains = money.getRequestMoney() % this.denomination;
+        int remains       = money.getRequestMoney() % this.denomination;
 
         if ( countBanknote > 0 ) {
             System.out.println( "Купюра " + this.denomination + " " + countBanknote + " шт." );
@@ -41,6 +46,15 @@ public class MoneySlot {
         }
     }
 
+    public void inputCash( Money money ) {
+        if ( money.getRequestMoney() == this.denomination ) {
+            this.countDenomination++;
+        }
+        else {
+            moneySlotNext.inputCash( money );
+        }
+    }
+
     /**
      * Назначить следующий слот(ячейку)
      *
@@ -48,6 +62,15 @@ public class MoneySlot {
      */
     public void setMoneySlotNext( MoneySlot slot ) {
         this.moneySlotNext = slot;
+    }
+
+    /**
+     * Getter countDenomination
+     *
+     * @return countDenomination
+     */
+    public int getCountDenomination() {
+        return countDenomination;
     }
 
 }
