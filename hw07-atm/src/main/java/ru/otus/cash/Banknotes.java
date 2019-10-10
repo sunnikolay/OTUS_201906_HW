@@ -1,4 +1,4 @@
-package ru.otus.cassette;
+package ru.otus.cash;
 
 public enum Banknotes {
     RUB_100(100), RUB_200(200), RUB_500(500), RUB_1000(1000),
