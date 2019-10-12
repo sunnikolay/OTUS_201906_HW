@@ -1,45 +1,13 @@
 package ru.otus.cassette;
 
-public abstract class Cassette {
+public interface Cassette {
 
-    /**
-     * Номинал купюры
-     */
-    private int denomination;
+    void addCountDenomination();
 
-    /**
-     * Количество купюр в ячейке
-     */
-    int countDenomination = 0;
+    boolean subCountDenomination();
 
-    /**
-     * Constructor
-     *
-     * @param denomination номинал купюры
-     */
-    Cassette( int denomination ) {
-        this.denomination = denomination;
-    }
+    int getDenomination();
 
-    /**
-     * Добавить количество купюр
-     */
-    public void addCountDenomination() {
-        this.countDenomination++;
-    }
-
-    /**
-     * Getter denomination
-     *
-     * @return denomination
-     */
-    public int getDenomination() {
-        return this.denomination;
-    }
-
-    /**
-     * Запросить количество купюр в кассете.
-     */
-    public abstract int getCountDenomination();
+    int getCountDenomination();
 
 }
