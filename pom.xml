@@ -21,6 +21,7 @@
         <module>hw05-autoLog</module>
         <module>hw06-gc</module>
         <module>hw07-atm</module>
+        <module>hw08-atmDepartment</module>
     </modules>
 
     <properties>
