@@ -1,6 +1,6 @@
 package ru.otus.commands;
 
-public interface Command {
+public interface CommandATM {
 
     /**
      * Выполнить команду

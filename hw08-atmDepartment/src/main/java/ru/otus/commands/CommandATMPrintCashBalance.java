@@ -2,11 +2,11 @@ package ru.otus.commands;
 
 import ru.otus.department.Department;
 
-public class CommandPrintCashBalance implements Command {
+public class CommandATMPrintCashBalance implements CommandATM {
 
     private Department department;
 
-    public CommandPrintCashBalance( Department department ) {
+    public CommandATMPrintCashBalance( Department department ) {
         this.department = department;
     }
 

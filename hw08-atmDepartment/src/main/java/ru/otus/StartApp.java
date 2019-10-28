@@ -2,9 +2,9 @@ package ru.otus;
 
 import ru.otus.atm.Atm;
 import ru.otus.atm.AtmImpl;
-import ru.otus.commands.Command;
-import ru.otus.commands.CommandPrintCashBalance;
-import ru.otus.commands.CommandRestoreATM;
+import ru.otus.commands.CommandATM;
+import ru.otus.commands.CommandATMPrintCashBalance;
+import ru.otus.commands.CommandATMRestoreATM;
 import ru.otus.department.Department;
 
 public class StartApp {
@@ -53,12 +53,12 @@ public class StartApp {
 
         // Восстановление ATM's
         System.out.println( "----------------------------------" );
-        Command restoreAtm = new CommandRestoreATM( department1, atm1 );
-        Command restoreAllAtm = new CommandRestoreATM( department1 );
+        CommandATM restoreAtm    = new CommandATMRestoreATM( department1, atm1 );
+        CommandATM restoreAllAtm = new CommandATMRestoreATM( department1 );
         restoreAtm.execute();
         restoreAllAtm.execute();
 
-        restoreAllAtm = new CommandRestoreATM( department2 );
+        restoreAllAtm = new CommandATMRestoreATM( department2 );
         restoreAllAtm.execute();
 
         department1.printCurrentStateAllATM();
@@ -66,10 +66,10 @@ public class StartApp {
 
         // Печать баланса
         System.out.println( "----------------------------------" );
-        Command printCashBalance = new CommandPrintCashBalance( department1 );
+        CommandATM printCashBalance = new CommandATMPrintCashBalance( department1 );
         printCashBalance.execute();
 
-        printCashBalance = new CommandPrintCashBalance( department2 );
+        printCashBalance = new CommandATMPrintCashBalance( department2 );
         printCashBalance.execute();
 
     }
