@@ -1,13 +1,15 @@
 package ru.otus.atm;
 
+import ru.otus.atm.observer.Observer;
 import ru.otus.cash.Banknotes;
 import ru.otus.cassette.Cassette;
 import ru.otus.cassette.CassetteImpl;
+import ru.otus.department.Subject;
 import ru.otus.request.Request;
 
 import java.util.*;
 
-public class AtmImpl implements Atm {
+public class AtmImpl implements Atm, Observer {
 
     /**
      * Имя банкомата
@@ -15,17 +17,25 @@ public class AtmImpl implements Atm {
     private String name;
 
     /**
-     * Существующие кассеты
+     * Существующие кассеты в банкомате
      */
-    private Set<Cassette> cassettes;
+    private List<Cassette> cassettes;
+
+    /**
+     * Хранитель
+     */
+    private AtmKeeper keeper;
 
     /**
      * Constructor AtmImpl
      */
-    public AtmImpl( String name ) {
-        this.name = name;
+    public AtmImpl( String name, Subject department ) {
+        this.name       = name;
+        this.keeper     = new AtmKeeper();
+        this.cassettes = new ArrayList<>();
 
-        this.cassettes = new TreeSet<>( Comparator.comparing( Cassette::getDenomination ).reversed() );
+        // Регистрация наблюдателя в Department
+        department.registerObserver( this );
 
         for ( Banknotes value : Banknotes.values() ) {
             Cassette someCassette = new CassetteImpl( value.getDenomination() );
@@ -37,7 +47,7 @@ public class AtmImpl implements Atm {
 
     @Override
     public void initialize() {
-        System.out.println( "[" + this.name + "]: Зарегистрированно кассет: " + cassettes.size() );
+        compareReverse();
     }
 
     @Override
@@ -50,7 +60,6 @@ public class AtmImpl implements Atm {
                 }
             }
         }
-        showCassetes();
     }
 
     @Override
@@ -63,7 +72,9 @@ public class AtmImpl implements Atm {
                 }
             }
         }
-        showCassetes();
+
+        // Сохранить состояние кассет
+        if ( save ) { this.keeper.setSave( this.saveCasettes() ); }
     }
 
     @Override
@@ -73,9 +84,9 @@ public class AtmImpl implements Atm {
         List<Integer>   virtMoney   = new ArrayList<>();
 
         for ( Cassette cassette : this.cassettes ) {
-            int denomination = cassette.getDenomination();
+            int denomination    = cassette.getDenomination();
             int cntDenomination = cassette.getCountDenomination();
-            if ( cntDenomination > 0 && remSum >= denomination && (remSum / denomination) <= cntDenomination ) {
+            if ( cntDenomination > 0 && remSum >= denomination && ( remSum / denomination ) <= cntDenomination ) {
                 int countNotes = remSum / denomination;
                 remSum = remSum % denomination;
 
@@ -104,12 +115,10 @@ public class AtmImpl implements Atm {
     }
 
     /**
-     * Печать кассет и кол-во банкнот в кассете
+     * Сортировка массива от большего к меньшему
      */
-    public void showCassetes() {
-        for ( Cassette cassette : this.cassettes ) {
-            System.out.println( "[" + this.name + "] кассета: " + cassette.getDenomination() + " кол-во купюр: " + cassette.getCountDenomination() );
-        }
+    private void compareReverse() {
+        this.cassettes.sort( CassetteImpl.COMPARE_REVERSE );
     }
 
     /**
@@ -122,8 +131,47 @@ public class AtmImpl implements Atm {
     }
 
     @Override
-    public Memento saveCasettes() {
-        return new Memento( this.cassettes );
+    public DefaultStateAtm saveCasettes() {
+        return new DefaultStateAtm( this.cassettes );
+    }
+
+    @Override
+    public void restoreCasettes() {
+        this.cassettes.clear();
+        for ( Cassette keeperCassette : this.keeper.getDefaultState().getCassettes() ) {
+            Cassette nc = new CassetteImpl( keeperCassette.getDenomination() );
+            nc.setCountDenomination( keeperCassette.getCountDenomination() );
+            this.cassettes.add( nc );
+        }
+    }
+
+    @Override
+    public String toStringCassettes() {
+        StringBuilder out = new StringBuilder( this.name + " -> {" );
+        for ( Cassette cassette : this.cassettes ) {
+            out.append( cassette.getDenomination() ).append( ":" ).append( cassette.getCountDenomination() ).append( "," );
+        }
+        out.delete( out.length() - 1, out.length() );
+        out.append( "}" );
+
+        return out.toString();
+    }
+
+    @Override
+    public String getCashBalance() {
+        StringBuilder out     = new StringBuilder( this.name + " balance: " );
+        int           balance = 0;
+        for ( Cassette cassette : this.cassettes ) {
+            balance += cassette.getDenomination() * cassette.getCountDenomination();
+        }
+        out.append( balance );
+
+        return String.valueOf( out );
+    }
+
+    @Override
+    public void printCashBalance() {
+        System.out.println( this.getCashBalance() );
     }
 
 }

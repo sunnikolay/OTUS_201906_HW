@@ -2,14 +2,14 @@ package ru.otus.atm;
 
 public class AtmKeeper {
 
-    private Memento memento;
+    private DefaultStateAtm defaultState;
 
-    public Memento getMemento() {
-        return this.memento;
+    DefaultStateAtm getDefaultState() {
+        return this.defaultState;
     }
 
-    public void setMemento( Memento memento ) {
-        this.memento = memento;
+    void setSave( DefaultStateAtm defaultState ) {
+        this.defaultState = defaultState;
     }
 
 }

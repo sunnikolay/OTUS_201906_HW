@@ -8,6 +8,8 @@ public interface Cassette {
 
     int getDenomination();
 
+    void setCountDenomination( int countDenomination );
+
     int getCountDenomination();
 
 }
