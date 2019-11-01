@@ -54,12 +54,12 @@ public interface Atm {
      *
      * @return Объект DefaultStateAtm
      */
-    DefaultStateAtm saveCasettes();
+    DefaultStateAtm saveCassettes();
 
     /**
      * Восстановить значения кассет
      */
-    void restoreCasettes();
+    void restoreCassettes();
 
     /**
      * Печать остатка денежных средств

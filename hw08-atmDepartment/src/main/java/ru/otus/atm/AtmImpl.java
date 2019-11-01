@@ -16,6 +16,8 @@ public class AtmImpl implements Atm, Observer {
      */
     private String name;
 
+    private int cashBalance;
+
     /**
      * Существующие кассеты в банкомате
      */
@@ -74,7 +76,7 @@ public class AtmImpl implements Atm, Observer {
         }
 
         // Сохранить состояние кассет
-        if ( save ) { this.keeper.setSave( this.saveCasettes() ); }
+        if ( save ) { this.keeper.setSave( this.saveCassettes() ); }
     }
 
     @Override
@@ -131,12 +133,12 @@ public class AtmImpl implements Atm, Observer {
     }
 
     @Override
-    public DefaultStateAtm saveCasettes() {
+    public DefaultStateAtm saveCassettes() {
         return new DefaultStateAtm( this.cassettes );
     }
 
     @Override
-    public void restoreCasettes() {
+    public void restoreCassettes() {
         this.cassettes.clear();
         for ( Cassette keeperCassette : this.keeper.getDefaultState().getCassettes() ) {
             Cassette nc = new CassetteImpl( keeperCassette.getDenomination() );

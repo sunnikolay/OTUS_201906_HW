@@ -44,7 +44,7 @@ public class Department implements Subject {
      * @param atm Банкомат
      */
     public void restoreATM( Atm atm ) {
-        atm.restoreCasettes();
+        atm.restoreCassettes();
     }
 
     /**
