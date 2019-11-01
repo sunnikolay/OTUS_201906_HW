@@ -2,9 +2,9 @@ import java.util.*;
 
 public class DIYArrayList<T> implements List<T> {
 
-    private final int INIT_SIZE = 100;
-    private Object[] objects = new Object[ INIT_SIZE ];
-    private int pointer = 0;
+    private final int      INIT_SIZE = 16;
+    private       Object[] objects   = new Object[ INIT_SIZE ];
+    private       int      pointer   = 0;
 
     @Override
     public int size() {
@@ -23,7 +23,30 @@ public class DIYArrayList<T> implements List<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return null;
+        return new Iterator<T>() {
+            int cursor = 0;
+            int lastRet = -1;
+
+            @Override
+            public boolean hasNext() {
+                return cursor != size();
+            }
+
+            @Override
+            public T next() {
+                try {
+                    int i    = cursor;
+                    T   next = get( i );
+                    lastRet = i;
+                    cursor  = i + 1;
+
+                    return next;
+                }
+                catch ( IndexOutOfBoundsException e ) {
+                    throw new NoSuchElementException();
+                }
+            }
+        };
     }
 
     @Override
@@ -38,7 +61,7 @@ public class DIYArrayList<T> implements List<T> {
 
     @Override
     public boolean add( T t ) {
-        if ( this.pointer == objects.length-1 ) {
+        if ( this.pointer == objects.length - 1 ) {
             resize( objects.length + INIT_SIZE );
         }
 
@@ -65,7 +88,11 @@ public class DIYArrayList<T> implements List<T> {
 
     @Override
     public boolean addAll( Collection<? extends T> collection ) {
-        throw new UnsupportedOperationException( "oooPs..." );
+        for ( T t : collection ) {
+            this.add( t );
+        }
+
+        return true;
     }
 
     @Override
@@ -95,7 +122,7 @@ public class DIYArrayList<T> implements List<T> {
 
     @Override
     public T set( int index, T type ) {
-        T old = (T) objects[ index ];
+        T      old       = (T) objects[ index ];
         Object newObject = type;
         this.objects[ index ] = newObject;
 
@@ -124,52 +151,70 @@ public class DIYArrayList<T> implements List<T> {
 
     @Override
     public ListIterator<T> listIterator() {
-//        return new ListIterator<>() {
-//            @Override
-//            public boolean hasNext() {
-//                return pointer < objects.length;
-//            }
+        return new ListIterator<>() {
+
+            int lasRet = -1;
+
+            @Override
+            public boolean hasNext() {
+                return pointer < objects.length;
+            }
+
+            @Override
+            public T next() {
+//                T obj = null;
 //
-//            @Override
-//            public T next() {
-//                return (T) objects[ pointer++ ];
-//            }
+//                try {
+//                    obj = (T) objects[ pointer++ ];
+//                }
+//                catch ( Exception e ) {
 //
-//            @Override
-//            public boolean hasPrevious() {
-//                return false;
-//            }
+//                }
 //
-//            @Override
-//            public T previous() {
-//                return null;
-//            }
-//
-//            @Override
-//            public int nextIndex() {
-//                return 0;
-//            }
-//
-//            @Override
-//            public int previousIndex() {
-//                return 0;
-//            }
-//
-//            @Override
-//            public void remove() {
-//
-//            }
-//
-//            @Override
-//            public void set( T t ) {
-//
-//            }
-//
-//            @Override
-//            public void add( T t ) {
-//
-//            }
-//        };
+//                return obj;
+                lasRet = pointer++;
+                return (T) objects[ pointer++ ];
+            }
+
+            @Override
+            public boolean hasPrevious() {
+                return false;
+            }
+
+            @Override
+            public T previous() {
+                return null;
+            }
+
+            @Override
+            public int nextIndex() {
+                return 0;
+            }
+
+            @Override
+            public int previousIndex() {
+                return 0;
+            }
+
+            @Override
+            public void remove() {
+
+            }
+
+            @Override
+            public void set( T t ) {
+                try {
+                    DIYArrayList.this.set( this.lasRet, t);
+                } catch (IndexOutOfBoundsException ex) {
+                    throw new ConcurrentModificationException();
+                }
+            }
+
+            @Override
+            public void add( T t ) {
+
+            }
+        };
     }
 
     @Override
@@ -186,8 +231,9 @@ public class DIYArrayList<T> implements List<T> {
     public String toString() {
         String str = "";
         for ( int i = 0; i < pointer; i++ ) {
-            str += this.objects[i] + ", ";
+            str += this.objects[ i ] + ", ";
         }
         return str;
     }
+
 }
