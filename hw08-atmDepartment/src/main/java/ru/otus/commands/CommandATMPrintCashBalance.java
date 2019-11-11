@@ -12,7 +12,7 @@ public class CommandATMPrintCashBalance implements CommandATM {
 
     @Override
     public void execute() {
-        this.department.printCashBalance();
+        //this.department.printCashBalance();
     }
 
 }

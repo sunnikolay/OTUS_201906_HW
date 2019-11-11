@@ -28,49 +28,49 @@ public class StartApp {
         // Департаменты
         Department department1 = new Department( nameDepart1 );
         Department department2 = new Department( nameDepart2 );
-        Atm        atm1        = new AtmImpl( nameDepart1 + "; ATM: 1", department1 );
-        Atm        atm2        = new AtmImpl( nameDepart1 + "; ATM: 2", department1 );
-        Atm        atm3        = new AtmImpl( nameDepart2 + "; ATM: 3", department2 );
-        Atm        atm4        = new AtmImpl( nameDepart2 + "; ATM: 4", department2 );
-        department1.addATM( atm1 );
-        department1.addATM( atm2 );
-        department2.addATM( atm3 );
-        department2.addATM( atm4 );
+        Atm        atm1        = new AtmImpl( nameDepart1 + "; ATM: 1" );
+        Atm        atm2        = new AtmImpl( nameDepart1 + "; ATM: 2" );
+        Atm        atm3        = new AtmImpl( nameDepart2 + "; ATM: 3" );
+        Atm        atm4        = new AtmImpl( nameDepart2 + "; ATM: 4" );
+        department1.addATM( (AtmImpl) atm1 );
+        department1.addATM( (AtmImpl) atm2 );
+        department2.addATM( (AtmImpl) atm3 );
+        department2.addATM( (AtmImpl) atm4 );
         department1.printAllAtm();
         department2.printAllAtm();
 
-        // Загрузка банкнот
-        department1.uploadBanknotes( atm1, ub1, true );
-        department1.uploadBanknotes( atm1, ub1, false );
-        department1.uploadBanknotes( atm2, ub1, true );
-        department1.uploadBanknotes( atm2, ub1, false );
+//        // Загрузка банкнот
+//        department1.uploadBanknotes( atm1, ub1, true );
+//        department1.uploadBanknotes( atm1, ub1, false );
+//        department1.uploadBanknotes( atm2, ub1, true );
+//        department1.uploadBanknotes( atm2, ub1, false );
         department2.uploadBanknotes( atm3, ub2, true );
-        department2.uploadBanknotes( atm3, ub3, false );
-        department2.uploadBanknotes( atm4, ub3, true );
-        department2.uploadBanknotes( atm4, ub1, false );
-        department1.printCurrentStateAllATM();
-        department2.printCurrentStateAllATM();
-
-        // Восстановление ATM's
-        System.out.println( "----------------------------------" );
-        CommandATM restoreAtm    = new CommandATMRestoreATM( department1, atm1 );
-        CommandATM restoreAllAtm = new CommandATMRestoreATM( department1 );
-        restoreAtm.execute();
-        restoreAllAtm.execute();
-
-        restoreAllAtm = new CommandATMRestoreATM( department2 );
-        restoreAllAtm.execute();
-
-        department1.printCurrentStateAllATM();
-        department2.printCurrentStateAllATM();
-
-        // Печать баланса
-        System.out.println( "----------------------------------" );
-        CommandATM printCashBalance = new CommandATMPrintCashBalance( department1 );
-        printCashBalance.execute();
-
-        printCashBalance = new CommandATMPrintCashBalance( department2 );
-        printCashBalance.execute();
+//        department2.uploadBanknotes( atm3, ub3, false );
+//        department2.uploadBanknotes( atm4, ub3, true );
+//        department2.uploadBanknotes( atm4, ub1, false );
+//        department1.printCurrentStateAllATM();
+//        department2.printCurrentStateAllATM();
+//
+//        // Восстановление ATM's
+//        System.out.println( "----------------------------------" );
+//        CommandATM restoreAtm    = new CommandATMRestoreATM( department1, atm1 );
+//        CommandATM restoreAllAtm = new CommandATMRestoreATM( department1 );
+//        restoreAtm.execute();
+//        restoreAllAtm.execute();
+//
+//        restoreAllAtm = new CommandATMRestoreATM( department2 );
+//        restoreAllAtm.execute();
+//
+//        department1.printCurrentStateAllATM();
+//        department2.printCurrentStateAllATM();
+//
+//        // Печать баланса
+//        System.out.println( "----------------------------------" );
+//        CommandATM printCashBalance = new CommandATMPrintCashBalance( department1 );
+//        printCashBalance.execute();
+//
+//        printCashBalance = new CommandATMPrintCashBalance( department2 );
+//        printCashBalance.execute();
 
     }
 

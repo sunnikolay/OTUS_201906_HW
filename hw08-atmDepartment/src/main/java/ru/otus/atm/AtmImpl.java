@@ -1,27 +1,36 @@
 package ru.otus.atm;
 
-import ru.otus.atm.observer.Observer;
+import ru.otus.atm.observer.BalanceObserverCassette;
+import ru.otus.atm.subject.SubjectATM;
 import ru.otus.cash.Banknotes;
 import ru.otus.cassette.Cassette;
 import ru.otus.cassette.CassetteImpl;
-import ru.otus.department.Subject;
+import ru.otus.department.observer.BalanceObserverATM;
 import ru.otus.request.Request;
 
 import java.util.*;
 
-public class AtmImpl implements Atm, Observer {
+public class AtmImpl implements Atm, BalanceObserverCassette, SubjectATM {
 
     /**
      * Имя банкомата
      */
     private String name;
 
-    private int cashBalance;
+    /**
+     * Текущий баланс банкомата
+     */
+    private int balanceAtm;
 
     /**
      * Существующие кассеты в банкомате
      */
     private List<Cassette> cassettes;
+
+    /**
+     * Список наблюдателей
+     */
+    private List<BalanceObserverATM> observerDepartments;
 
     /**
      * Хранитель
@@ -31,20 +40,44 @@ public class AtmImpl implements Atm, Observer {
     /**
      * Constructor AtmImpl
      */
-    public AtmImpl( String name, Subject department ) {
-        this.name       = name;
-        this.keeper     = new AtmKeeper();
-        this.cassettes = new ArrayList<>();
-
-        // Регистрация наблюдателя в Department
-        department.registerObserver( this );
+    public AtmImpl( String name ) {
+        this.name                = name;
+        this.keeper              = new AtmKeeper();
+        this.cassettes           = new ArrayList<>();
+        this.observerDepartments = new ArrayList<>();
 
         for ( Banknotes value : Banknotes.values() ) {
-            Cassette someCassette = new CassetteImpl( value.getDenomination() );
+            CassetteImpl someCassette = new CassetteImpl( value.getDenomination() );
+            someCassette.registerObserver( this );
             cassettes.add( someCassette );
         }
 
         initialize();
+    }
+
+    /**
+     * Сортировка массива от большего к меньшему
+     */
+    private void compareReverse() {
+        this.cassettes.sort( CassetteImpl.COMPARE_REVERSE );
+    }
+
+    /**
+     * Getter name
+     *
+     * @return Название банкомата
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Getter balance
+     *
+     * @return Текущий баланс банкомата
+     */
+    public int getBalanceAtm() {
+        return balanceAtm;
     }
 
     @Override
@@ -116,22 +149,6 @@ public class AtmImpl implements Atm, Observer {
         return returnNotes;
     }
 
-    /**
-     * Сортировка массива от большего к меньшему
-     */
-    private void compareReverse() {
-        this.cassettes.sort( CassetteImpl.COMPARE_REVERSE );
-    }
-
-    /**
-     * Getter name
-     *
-     * @return Название банкомата
-     */
-    public String getName() {
-        return name;
-    }
-
     @Override
     public DefaultStateAtm saveCassettes() {
         return new DefaultStateAtm( this.cassettes );
@@ -172,8 +189,32 @@ public class AtmImpl implements Atm, Observer {
     }
 
     @Override
-    public void printCashBalance() {
-        System.out.println( this.getCashBalance() );
+    public void balanceChangeCassette( int denomination, int count, String action ) {
+        if ( action.equals( "add" ) ) {
+            this.balanceAtm += denomination * count;
+        }
+        else if ( action.equals( "delete" ) ) {
+            this.balanceAtm -= denomination * count;
+        }
+
+        this.notifyObservers();
+    }
+
+    @Override
+    public void registerObserver( BalanceObserverATM observer ) {
+        this.observerDepartments.add( observer );
+    }
+
+    @Override
+    public void removeObserver( BalanceObserverATM observer ) {
+        this.observerDepartments.remove( observer );
+    }
+
+    @Override
+    public void notifyObservers() {
+        for ( BalanceObserverATM observerDepartment : this.observerDepartments ) {
+            observerDepartment.balanceChangeAtm();
+        }
     }
 
 }
