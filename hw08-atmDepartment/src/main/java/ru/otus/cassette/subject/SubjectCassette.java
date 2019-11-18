@@ -21,6 +21,6 @@ public interface SubjectCassette {
     /**
      * Оповещение наблюдателей
      */
-    void notifyObservers( String action );
+    void notifyObservers();
 
 }

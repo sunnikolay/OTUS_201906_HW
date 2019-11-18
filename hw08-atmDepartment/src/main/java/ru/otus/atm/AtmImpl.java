@@ -162,6 +162,7 @@ public class AtmImpl implements Atm, BalanceObserverCassette, SubjectATM {
             nc.setCountDenomination( keeperCassette.getCountDenomination() );
             this.cassettes.add( nc );
         }
+        this.balanceChangeCassette();
     }
 
     @Override
@@ -189,13 +190,12 @@ public class AtmImpl implements Atm, BalanceObserverCassette, SubjectATM {
     }
 
     @Override
-    public void balanceChangeCassette( int denomination, int count, String action ) {
-        if ( action.equals( "add" ) ) {
-            this.balanceAtm += denomination * count;
+    public void balanceChangeCassette() {
+        int sum = 0;
+        for ( Cassette cassette : this.cassettes ) {
+            sum += cassette.getDenomination() * cassette.getCountDenomination();
         }
-        else if ( action.equals( "delete" ) ) {
-            this.balanceAtm -= denomination * count;
-        }
+        this.balanceAtm = sum;
 
         this.notifyObservers();
     }

@@ -38,14 +38,14 @@ public class CassetteImpl implements Cassette, Serializable, SubjectCassette {
     @Override
     public void addCountDenomination() {
         this.countDenomination++;
-        this.notifyObservers( "add" );
+        this.notifyObservers();
     }
 
     @Override
     public boolean subCountDenomination() {
         if ( this.countDenomination > 0 ) {
             this.countDenomination--;
-            this.notifyObservers( "delete" );
+            this.notifyObservers();
             return true;
         }
         else {
@@ -69,9 +69,9 @@ public class CassetteImpl implements Cassette, Serializable, SubjectCassette {
     }
 
     @Override
-    public void notifyObservers( String action ) {
+    public void notifyObservers() {
         for ( BalanceObserverCassette observer : this.observers ) {
-            observer.balanceChangeCassette( this.denomination, this.countDenomination, action );
+            observer.balanceChangeCassette();
         }
     }
 

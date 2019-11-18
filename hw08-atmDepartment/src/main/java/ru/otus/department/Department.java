@@ -85,7 +85,21 @@ public class Department implements BalanceObserverATM {
 
     @Override
     public void balanceChangeAtm() {
+        int sum = 0;
+        for ( Atm atm : this.atms ) {
+            sum += atm.getBalanceAtm();
+        }
 
+        this.balanceDepartment = sum;
+    }
+
+    /**
+     * Getter balanceDepartment
+     *
+     * @return Баланс департамента
+     */
+    public int getBalanceDepartment() {
+        return balanceDepartment;
     }
 
 }

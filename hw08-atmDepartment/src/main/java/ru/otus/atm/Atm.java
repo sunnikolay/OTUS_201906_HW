@@ -62,6 +62,13 @@ public interface Atm {
     void restoreCassettes();
 
     /**
+     * Getter balance
+     *
+     * @return Текущий баланс банкомата
+     */
+    int getBalanceAtm();
+
+    /**
      * Печать остатка денежных средств
      */
     String getCashBalance();
