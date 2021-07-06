@@ -1,21 +1,37 @@
 package ru.otus.department;
 
 import ru.otus.atm.Atm;
-import ru.otus.atm.observer.Observer;
+import ru.otus.atm.AtmImpl;
+import ru.otus.department.observer.BalanceObserverATM;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Department implements Subject {
+public class Department implements BalanceObserverATM {
 
-    private String         name;
-    private List<Atm>      atms;
-    private List<Observer> observers;
+    /**
+     * Имя департамента
+     */
+    private String name;
 
+    /**
+     * Список банкоматов
+     */
+    private List<Atm> atms;
+
+    /**
+     * Баланс департамента
+     */
+    private int balanceDepartment;
+
+    /**
+     * Constructor
+     *
+     * @param name имя департамента
+     */
     public Department( String name ) {
-        this.name      = name;
-        this.atms      = new ArrayList<>();
-        this.observers = new ArrayList<>();
+        this.name = name;
+        this.atms = new ArrayList<>();
     }
 
     /**
@@ -23,8 +39,9 @@ public class Department implements Subject {
      *
      * @param atm Объект ATM
      */
-    public void addATM( Atm atm ) {
+    public void addATM( AtmImpl atm ) {
         this.atms.add( atm );
+        atm.registerObserver( this );
     }
 
     /**
@@ -44,7 +61,7 @@ public class Department implements Subject {
      * @param atm Банкомат
      */
     public void restoreATM( Atm atm ) {
-        atm.restoreCasettes();
+        atm.restoreCassettes();
     }
 
     /**
@@ -53,16 +70,6 @@ public class Department implements Subject {
     public void restoreAllATM() {
         for ( Atm atm : this.atms ) {
             restoreATM( atm );
-        }
-    }
-
-    private void printCurrentStateATM( Atm atm ) {
-        System.out.println( atm.toStringCassettes() );
-    }
-
-    public void printCurrentStateAllATM() {
-        for ( Atm atm : this.atms ) {
-            this.printCurrentStateATM( atm );
         }
     }
 
@@ -76,39 +83,23 @@ public class Department implements Subject {
         }
     }
 
-    /**
-     * Getter name
-     *
-     * @return Название Департамента
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Getter atms
-     *
-     * @return Колекция банкоматов департамента
-     */
-    public List<Atm> getAtms() {
-        return atms;
-    }
-
     @Override
-    public void registerObserver( Observer observer ) {
-        this.observers.add( observer );
-    }
-
-    @Override
-    public void removeObserver( Observer observer ) {
-        this.observers.remove( observer );
-    }
-
-    @Override
-    public void printCashBalance() {
-        for ( Observer observer : this.observers ) {
-            observer.printCashBalance();
+    public void balanceChangeAtm() {
+        int sum = 0;
+        for ( Atm atm : this.atms ) {
+            sum += atm.getBalanceAtm();
         }
+
+        this.balanceDepartment = sum;
+    }
+
+    /**
+     * Getter balanceDepartment
+     *
+     * @return Баланс департамента
+     */
+    public int getBalanceDepartment() {
+        return balanceDepartment;
     }
 
 }

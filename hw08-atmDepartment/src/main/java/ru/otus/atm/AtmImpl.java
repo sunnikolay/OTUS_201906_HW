@@ -1,15 +1,16 @@
 package ru.otus.atm;
 
-import ru.otus.atm.observer.Observer;
+import ru.otus.atm.observer.BalanceObserverCassette;
+import ru.otus.atm.subject.SubjectATM;
 import ru.otus.cash.Banknotes;
 import ru.otus.cassette.Cassette;
 import ru.otus.cassette.CassetteImpl;
-import ru.otus.department.Subject;
+import ru.otus.department.observer.BalanceObserverATM;
 import ru.otus.request.Request;
 
 import java.util.*;
 
-public class AtmImpl implements Atm, Observer {
+public class AtmImpl implements Atm, BalanceObserverCassette, SubjectATM {
 
     /**
      * Имя банкомата
@@ -17,9 +18,19 @@ public class AtmImpl implements Atm, Observer {
     private String name;
 
     /**
+     * Текущий баланс банкомата
+     */
+    private int balanceAtm;
+
+    /**
      * Существующие кассеты в банкомате
      */
     private List<Cassette> cassettes;
+
+    /**
+     * Список наблюдателей
+     */
+    private List<BalanceObserverATM> observerDepartments;
 
     /**
      * Хранитель
@@ -29,20 +40,44 @@ public class AtmImpl implements Atm, Observer {
     /**
      * Constructor AtmImpl
      */
-    public AtmImpl( String name, Subject department ) {
-        this.name       = name;
-        this.keeper     = new AtmKeeper();
-        this.cassettes = new ArrayList<>();
-
-        // Регистрация наблюдателя в Department
-        department.registerObserver( this );
+    public AtmImpl( String name ) {
+        this.name                = name;
+        this.keeper              = new AtmKeeper();
+        this.cassettes           = new ArrayList<>();
+        this.observerDepartments = new ArrayList<>();
 
         for ( Banknotes value : Banknotes.values() ) {
-            Cassette someCassette = new CassetteImpl( value.getDenomination() );
+            CassetteImpl someCassette = new CassetteImpl( value.getDenomination() );
+            someCassette.registerObserver( this );
             cassettes.add( someCassette );
         }
 
         initialize();
+    }
+
+    /**
+     * Сортировка массива от большего к меньшему
+     */
+    private void compareReverse() {
+        this.cassettes.sort( CassetteImpl.COMPARE_REVERSE );
+    }
+
+    /**
+     * Getter name
+     *
+     * @return Название банкомата
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Getter balance
+     *
+     * @return Текущий баланс банкомата
+     */
+    public int getBalanceAtm() {
+        return balanceAtm;
     }
 
     @Override
@@ -74,7 +109,7 @@ public class AtmImpl implements Atm, Observer {
         }
 
         // Сохранить состояние кассет
-        if ( save ) { this.keeper.setSave( this.saveCasettes() ); }
+        if ( save ) { this.keeper.setSave( this.saveCassettes() ); }
     }
 
     @Override
@@ -114,35 +149,20 @@ public class AtmImpl implements Atm, Observer {
         return returnNotes;
     }
 
-    /**
-     * Сортировка массива от большего к меньшему
-     */
-    private void compareReverse() {
-        this.cassettes.sort( CassetteImpl.COMPARE_REVERSE );
-    }
-
-    /**
-     * Getter name
-     *
-     * @return Название банкомата
-     */
-    public String getName() {
-        return name;
-    }
-
     @Override
-    public DefaultStateAtm saveCasettes() {
+    public DefaultStateAtm saveCassettes() {
         return new DefaultStateAtm( this.cassettes );
     }
 
     @Override
-    public void restoreCasettes() {
+    public void restoreCassettes() {
         this.cassettes.clear();
         for ( Cassette keeperCassette : this.keeper.getDefaultState().getCassettes() ) {
             Cassette nc = new CassetteImpl( keeperCassette.getDenomination() );
             nc.setCountDenomination( keeperCassette.getCountDenomination() );
             this.cassettes.add( nc );
         }
+        this.balanceChangeCassette();
     }
 
     @Override
@@ -170,8 +190,31 @@ public class AtmImpl implements Atm, Observer {
     }
 
     @Override
-    public void printCashBalance() {
-        System.out.println( this.getCashBalance() );
+    public void balanceChangeCassette() {
+        int sum = 0;
+        for ( Cassette cassette : this.cassettes ) {
+            sum += cassette.getDenomination() * cassette.getCountDenomination();
+        }
+        this.balanceAtm = sum;
+
+        this.notifyObservers();
+    }
+
+    @Override
+    public void registerObserver( BalanceObserverATM observer ) {
+        this.observerDepartments.add( observer );
+    }
+
+    @Override
+    public void removeObserver( BalanceObserverATM observer ) {
+        this.observerDepartments.remove( observer );
+    }
+
+    @Override
+    public void notifyObservers() {
+        for ( BalanceObserverATM observerDepartment : this.observerDepartments ) {
+            observerDepartment.balanceChangeAtm();
+        }
     }
 
 }

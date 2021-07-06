@@ -3,7 +3,7 @@ package ru.otus.commands;
 import ru.otus.atm.Atm;
 import ru.otus.department.Department;
 
-public class CommandRestoreATM implements Command {
+public class CommandATMRestoreATM implements CommandATM {
 
     private Department department;
     private Atm        atm;
@@ -14,7 +14,7 @@ public class CommandRestoreATM implements Command {
      *
      * @param department объект Департамент
      */
-    public CommandRestoreATM( Department department, Atm atm ) {
+    public CommandATMRestoreATM( Department department, Atm atm ) {
         this.department  = department;
         this.atm         = atm;
         this.resetAllATM = false;
@@ -26,7 +26,7 @@ public class CommandRestoreATM implements Command {
      * @param department  объект Департамент
      * @param resetAllATM флаг восстановить все ATM
      */
-    public CommandRestoreATM( Department department ) {
+    public CommandATMRestoreATM( Department department ) {
         this.department  = department;
         this.resetAllATM = true;
     }
